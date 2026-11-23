@@ -1,3 +1,8 @@
+# Keep the Javascript bridge the WebView calls for pull-to-refresh.
+-keepclassmembers class in.pgease.tenant.MainActivity$ShellJsBridge {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
