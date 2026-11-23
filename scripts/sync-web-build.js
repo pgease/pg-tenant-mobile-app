@@ -68,25 +68,8 @@ if (fs.existsSync(targetIndexHtml)) {
   const mobileBridgeSnippet = `
     <!-- PG Ease Native Mobile Bridge -->
     <style>
-      :root {
-        --sat: env(safe-area-inset-top, 0px);
-        --sab: env(safe-area-inset-bottom, 0px);
-        --sal: env(safe-area-inset-left, 0px);
-        --sar: env(safe-area-inset-right, 0px);
-      }
       body {
-        padding-top: var(--sat);
-        padding-bottom: var(--sab);
-        padding-left: var(--sal);
-        padding-right: var(--sar);
-        -webkit-user-select: none;
-        user-select: none;
         -webkit-tap-highlight-color: transparent;
-        overscroll-behavior-y: none;
-      }
-      input, textarea, [contenteditable="true"] {
-        -webkit-user-select: auto;
-        user-select: auto;
       }
     </style>
     <script>
@@ -97,19 +80,9 @@ if (fs.existsSync(targetIndexHtml)) {
 
           console.log('[PG Ease Mobile] Capacitor runtime active.');
 
-          // Android Back Button handler
-          if (Cap.Plugins && Cap.Plugins.App) {
-            Cap.Plugins.App.addListener('backButton', function(event) {
-              var currentPath = window.location.pathname;
-              var isRoot = currentPath === '/' || currentPath === '/dashboard' || currentPath === '/login' || currentPath === '';
-              
-              if (!isRoot && window.history.length > 1) {
-                window.history.back();
-              } else {
-                Cap.Plugins.App.exitApp();
-              }
-            });
-          }
+          // Back, external links, downloads and pull-to-refresh are handled
+          // natively in MainActivity so they also work for the live site.
+          // Do not register a second Capacitor backButton listener here.
 
           // Splash screen auto-dismiss
           if (Cap.Plugins && Cap.Plugins.SplashScreen) {

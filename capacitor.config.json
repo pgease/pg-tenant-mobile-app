@@ -19,14 +19,21 @@
       "showSpinner": false
     },
     "StatusBar": {
-      "style": "LIGHT",
-      "backgroundColor": "#FFFFFF",
-      "overlaysWebView": false
+      "style": "DARK",
+      "backgroundColor": "#008080",
+      "overlaysWebView": true
+    },
+    "SystemBars": {
+      "style": "DARK",
+      "insetsHandling": "disable",
+      "initialViewportFitValueHint": "cover"
+    },
+    "App": {
+      "disableBackButtonHandler": true
     },
     "Keyboard": {
       "resize": "body",
-      "style": "LIGHT",
-      "resizeOnFullScreen": true
+      "style": "DARK"
     }
   }
 }

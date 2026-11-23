@@ -4,4 +4,10 @@
     <string name="title_activity_main">PG Ease Tenant</string>
     <string name="package_name">in.pgease.tenant</string>
     <string name="custom_url_scheme">in.pgease.tenant</string>
+    <string name="shell_offline_title">No connection</string>
+    <string name="shell_offline_body">Check your internet connection and try again.</string>
+    <string name="shell_retry">Retry</string>
+    <string name="shell_exit">Press back again to exit</string>
+    <string name="shell_no_app">No app found to open this link</string>
+    <string name="shell_no_upi_app">No UPI app found. Install Google Pay, PhonePe, Paytm, or BHIM, then try again.</string>
 </resources>
