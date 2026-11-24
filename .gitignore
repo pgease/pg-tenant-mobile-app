@@ -4,3 +4,8 @@ dist/
 *.log
 .env
 !.env.example
+
+# Keystore and secrets
+*.jks
+*.keystore
+keystore.properties

@@ -1,22 +1,41 @@
 {
   "appId": "in.pgease.tenant",
-  "appName": "PG Ease Tenant",
+  "appName": "PG Ease",
   "webDir": "dist",
   "appendUserAgent": "PGEaseApp",
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
     "cleartext": true,
-    "url": "https://tenant.pgease.com?app=1"
+    "allowNavigation": [
+      "*.pgease.com",
+      "*.pgease.in",
+      "*.easebuzz.in",
+      "*.razorpay.com",
+      "*.digio.in",
+      "*.cashfree.com",
+      "*.payu.in",
+      "*.payumoney.com",
+      "*.billdesk.com",
+      "*.ccavenue.com",
+      "*.stripe.com",
+      "*.juspay.in",
+      "*.phonepe.com",
+      "*.cardinalcommerce.com",
+      "*.arcot.com",
+      "*.wibmo.com",
+      "ebz-static.s3.ap-south-1.amazonaws.com"
+    ]
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": false,
       "backgroundColor": "#008080",
-      "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
-      "showSpinner": false
+      "showSpinner": false,
+      "splashFullScreen": false,
+      "splashImmersive": false
     },
     "StatusBar": {
       "style": "DARK",

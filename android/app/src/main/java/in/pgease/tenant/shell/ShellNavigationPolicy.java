@@ -139,7 +139,7 @@ public final class ShellNavigationPolicy {
 
     public boolean isAppHost(String url) {
         String host = hostOf(url);
-        return PRODUCTION_HOST.equals(host) || appHost.equals(host);
+        return PRODUCTION_HOST.equals(host) || appHost.equals(host) || "localhost".equals(host);
     }
 
     public boolean isInAppRoot(String url) {

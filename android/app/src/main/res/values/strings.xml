@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">PG Ease Tenant</string>
-    <string name="title_activity_main">PG Ease Tenant</string>
+    <string name="app_name">PG Ease</string>
+    <string name="title_activity_main">PG Ease</string>
     <string name="package_name">in.pgease.tenant</string>
     <string name="custom_url_scheme">in.pgease.tenant</string>
     <string name="shell_offline_title">No connection</string>

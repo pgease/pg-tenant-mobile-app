@@ -46,7 +46,6 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
     private static final int BRAND = 0xFF008080;
     private static final long EXIT_WINDOW_MS = 2000L;
 
-    private final int[] slides = { R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3 };
     private final AtomicBoolean pullAllowed = new AtomicBoolean(true);
     private final AtomicBoolean onAppHost = new AtomicBoolean(true);
     private final AtomicBoolean offline = new AtomicBoolean(false);
@@ -54,8 +53,6 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
     private ShellNavigationPolicy policy;
     private ShellDownloader downloader;
     private ShellSwipeRefreshLayout swipeRefresh;
-    private View onboardingOverlay;
-    private ViewPager onboardingPager;
     private View offlineView;
     private String failedUrl;
     private boolean mainFrameFailed;
@@ -74,8 +71,16 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
         installShell();
         applyBrandBars();
         installBackHandler();
-        showOnboardingIfNeeded();
+        // Single source of truth: onboarding is handled exclusively by the web app (OnboardingCarousel.tsx)
+        // showOnboardingIfNeeded();
         openDeepLink(getIntent());
+
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            WebView webView = web();
+            if (webView != null) {
+                webView.evaluateJavascript("if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SplashScreen) { window.Capacitor.Plugins.SplashScreen.hide(); }", null);
+            }
+        }, 3000);
     }
 
     @Override
@@ -185,6 +190,10 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
             hideOffline();
         }
         injectShellScript();
+        WebView webView = web();
+        if (webView != null) {
+            webView.evaluateJavascript("if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SplashScreen) { window.Capacitor.Plugins.SplashScreen.hide(); }", null);
+        }
     }
 
     public void onShellMainFrameError(String url) {
@@ -282,14 +291,6 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
     }
 
     private void onShellBack() {
-        if (onboardingOverlay != null) {
-            if (onboardingPager != null && onboardingPager.getCurrentItem() > 0) {
-                onboardingPager.setCurrentItem(onboardingPager.getCurrentItem() - 1, true);
-            } else {
-                dismissOnboarding();
-            }
-            return;
-        }
         if (offline.get()) {
             hideOffline();
             WebView webView = web();
@@ -367,9 +368,6 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
         }
         offlineView.setVisibility(View.VISIBLE);
         offlineView.bringToFront();
-        if (onboardingOverlay != null) {
-            onboardingOverlay.bringToFront();
-        }
     }
 
     private void hideOffline() {
@@ -393,112 +391,6 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
             webView.loadUrl(policy.getHomeUrl());
         } else {
             webView.reload();
-        }
-    }
-
-    private void showOnboardingIfNeeded() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(KEY_ONBOARDING_SEEN, false)) {
-            return;
-        }
-        ViewGroup rootView = findViewById(android.R.id.content);
-        if (rootView == null) {
-            return;
-        }
-        View overlay = LayoutInflater.from(this).inflate(R.layout.onboarding_overlay, rootView, false);
-        rootView.addView(overlay);
-        onboardingOverlay = overlay;
-
-        ViewPager viewPager = overlay.findViewById(R.id.onboarding_viewpager);
-        TextView btnSkip = overlay.findViewById(R.id.btn_skip);
-        Button btnAction = overlay.findViewById(R.id.btn_action);
-        LinearLayout dotsLayout = overlay.findViewById(R.id.dots_layout);
-        onboardingPager = viewPager;
-
-        viewPager.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return slides.length;
-            }
-
-            @Override
-            public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-                return view == object;
-            }
-
-            @NonNull
-            @Override
-            public Object instantiateItem(@NonNull ViewGroup container, int position) {
-                ImageView imageView = new ImageView(MainActivity.this);
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                ));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setImageResource(slides[position]);
-                container.addView(imageView);
-                return imageView;
-            }
-
-            @Override
-            public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-                container.removeView((View) object);
-            }
-        });
-
-        updateDots(dotsLayout, 0);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-            @Override
-            public void onPageSelected(int position) {
-                updateDots(dotsLayout, position);
-                btnAction.setText(position == slides.length - 1 ? "Get Started" : "Next");
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
-        });
-
-        btnSkip.setOnClickListener(v -> dismissOnboarding());
-        btnAction.setOnClickListener(v -> {
-            int current = viewPager.getCurrentItem();
-            if (current < slides.length - 1) {
-                viewPager.setCurrentItem(current + 1, true);
-            } else {
-                dismissOnboarding();
-            }
-        });
-    }
-
-    private void dismissOnboarding() {
-        if (onboardingOverlay == null) {
-            return;
-        }
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit().putBoolean(KEY_ONBOARDING_SEEN, true).apply();
-        View overlay = onboardingOverlay;
-        ViewGroup rootView = findViewById(android.R.id.content);
-        onboardingOverlay = null;
-        onboardingPager = null;
-        overlay.animate().alpha(0f).setDuration(250).withEndAction(() -> {
-            if (rootView != null) {
-                rootView.removeView(overlay);
-            }
-        });
-    }
-
-    private void updateDots(LinearLayout dotsLayout, int current) {
-        dotsLayout.removeAllViews();
-        for (int i = 0; i < slides.length; i++) {
-            View dot = new View(this);
-            int width = (i == current) ? dp(24) : dp(7);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, dp(7));
-            params.setMargins(dp(3), 0, dp(3), 0);
-            dot.setLayoutParams(params);
-            dot.setBackgroundResource(i == current ? R.drawable.dot_active : R.drawable.dot_inactive);
-            dotsLayout.addView(dot);
         }
     }
 
