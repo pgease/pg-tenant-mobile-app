@@ -6,10 +6,13 @@
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
+    "hostname": "tenant.pgease.com",
     "cleartext": true,
     "allowNavigation": [
       "*.pgease.com",
       "*.pgease.in",
+      "am4eey3lmk.execute-api.ap-south-1.amazonaws.com",
+      "*.execute-api.ap-south-1.amazonaws.com",
       "*.easebuzz.in",
       "*.razorpay.com",
       "*.digio.in",
