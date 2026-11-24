@@ -16,7 +16,7 @@ const WEB_APP_DIR = CANDIDATE_WEB_DIRS.find(dir => fs.existsSync(dir)) || CANDID
 const WEB_DIST_DIR = path.join(WEB_APP_DIR, 'dist');
 const TARGET_DIST_DIR = path.join(ROOT_MOBILE_DIR, 'dist');
 
-console.log('🚀 PG Ease Tenant Mobile Wrapper: Preparing Web Assets...');
+console.log('🚀 PG Ease Mobile Wrapper: Preparing Web Assets...');
 console.log(`📁 Source Web Directory: ${WEB_APP_DIR}`);
 console.log(`📁 Destination Directory: ${TARGET_DIST_DIR}`);
 
@@ -45,7 +45,7 @@ if (fs.existsSync(WEB_APP_DIR)) {
     // Write minimal shell
     fs.writeFileSync(
       path.join(TARGET_DIST_DIR, 'index.html'),
-      '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>PG Ease Tenant</title></head><body><div id="root">Loading PG Ease Tenant...</div></body></html>',
+      '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>PG Ease</title></head><body><div id="root">Loading PG Ease...</div></body></html>',
       'utf-8'
     );
   }
