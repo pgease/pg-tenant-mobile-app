@@ -41,13 +41,13 @@
       "splashImmersive": false
     },
     "StatusBar": {
-      "style": "DARK",
-      "backgroundColor": "#008080",
-      "overlaysWebView": true
+      "style": "LIGHT",
+      "backgroundColor": "#FFFFFF",
+      "overlaysWebView": false
     },
     "SystemBars": {
-      "style": "DARK",
-      "insetsHandling": "disable",
+      "style": "LIGHT",
+      "insetsHandling": "enable",
       "initialViewportFitValueHint": "cover"
     },
     "App": {
