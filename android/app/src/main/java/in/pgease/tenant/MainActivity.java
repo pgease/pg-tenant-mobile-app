@@ -308,7 +308,12 @@ public class MainActivity extends BridgeActivity implements ShellChromeClient.Na
             if (isJavascriptTrue(value) || isJavascriptBlocked(value)) {
                 return;
             }
-            goBackOrExit();
+            webView.evaluateJavascript("window.__pgeaseHandleBack ? window.__pgeaseHandleBack() : 'none'", backResult -> runOnUiThread(() -> {
+                if (backResult != null && backResult.contains("handled")) {
+                    return;
+                }
+                goBackOrExit();
+            }));
         }));
     }
 
